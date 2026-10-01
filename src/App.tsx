@@ -21,6 +21,7 @@ import mascotOne from '../assets/img/maskot_01.png'
 import mascotTwo from '../assets/img/maskot_02.png'
 import mascotThree from '../assets/img/maskot_03.png'
 import { firebaseAuth, googleProvider } from './firebase'
+import { agusRoles, getAgusRoleLabel } from './auth/roles'
 
 const mascotSequence = [agusMascot, mascotOne, mascotTwo, mascotThree]
 const onboardingMascots = [mascotOne, mascotTwo, mascotThree]
@@ -409,14 +410,23 @@ function App() {
   const [checks, setChecks] = useState(initialChecks)
   const [notice, setNotice] = useState('')
   const [accountName, setAccountName] = useState('Andi Prasetyo')
+  const [accountRole, setAccountRole] = useState('Pengguna')
   const uploadRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!firebaseAuth) return
-    return onAuthStateChanged(firebaseAuth, user => {
+    return onAuthStateChanged(firebaseAuth, async user => {
       if (user) {
         setAccountName(user.displayName || user.email?.split('@')[0] || 'Pengguna AGUS')
+        try {
+          const token = await user.getIdTokenResult()
+          setAccountRole(getAgusRoleLabel(token.claims.agusRole as string | undefined))
+        } catch {
+          setAccountRole('Pengguna')
+        }
         setWelcomeStage('complete')
+      } else {
+        setAccountRole('Pengguna')
       }
     })
   }, [])
@@ -549,7 +559,7 @@ function App() {
         </nav>
         <div className="sidebar-bottom">
           <div className="project-health"><div className="health-top"><span>PROJECT HEALTH</span><span className="health-dot" /></div><strong>On track</strong><div className="health-track"><span /></div><small>Updated 12 min ago</small></div>
-          <button className="profile-row" onClick={() => selectPage('Settings')}><span className="profile-avatar">{accountName.split(' ').map(part => part[0]).slice(0, 2).join('').toUpperCase()}</span><span className="profile-copy"><strong>{accountName}</strong><small>Sustainability manager</small></span><Ellipsis size={17} /></button>
+          <button className="profile-row" onClick={() => selectPage('Settings')}><span className="profile-avatar">{accountName.split(' ').map(part => part[0]).slice(0, 2).join('').toUpperCase()}</span><span className="profile-copy"><strong>{accountName}</strong><small>{accountRole}</small></span><Ellipsis size={17} /></button>
         </div>
       </aside>
 
@@ -647,7 +657,7 @@ function App() {
 
             <div className="compliance-banner"><ShieldCheck size={16} /><p><strong>Assessment disclaimer</strong> · AGUS supports assessment and improvement. Scores are internal and do not represent official BGH or GBCI certification. Always verify requirements against current official documents.</p><button aria-label="Dismiss disclaimer" onClick={event => event.currentTarget.parentElement?.remove()}>×</button></div>
             <div className="dashboard-quick-actions"><span>QUICK ACCESS</span><button onClick={() => uploadRef.current?.click()}><Upload size={14} /> Add evidence</button><button onClick={() => selectPage('Reports')}><Download size={14} /> Export report</button><button onClick={() => selectPage('Inspection')}><Camera size={14} /> Log inspection</button></div>
-          </> : activePage === 'Sesi Pembelajaran' ? <LearningPage /> : activePage === 'Rating Tools' ? <RatingToolsPage /> : activePage === 'Tentang aplikasi' ? <AboutInformation onSettings={() => selectPage('Settings')} /> : <ModulePage pageName={activePage} page={page} onUpload={() => uploadRef.current?.click()} onExport={exportReport} onNavigate={selectPage} />}
+          </> : activePage === 'Sesi Pembelajaran' ? <LearningPage /> : activePage === 'Rating Tools' ? <RatingToolsPage /> : activePage === 'Tentang aplikasi' ? <AboutInformation onSettings={() => selectPage('Settings')} /> : <ModulePage pageName={activePage} page={page} currentRole={accountRole} onUpload={() => uploadRef.current?.click()} onExport={exportReport} onNavigate={selectPage} />}
           <input ref={uploadRef} className="visually-hidden" type="file" accept="image/*,.pdf,.xlsx,.xls,.csv,.doc,.docx" onChange={uploadEvidence} />
           {notice && <div role="status" className="toast"><CircleCheck size={16} />{notice}<button aria-label="Dismiss notification" onClick={() => setNotice('')}>×</button></div>}
           <footer className="page-footer"><span>AGUS <b>·</b> Adhi Green Useful Sustainability</span><span>Illustrative demo data <b>·</b> Updated 30 Sep 2026</span></footer>
@@ -722,7 +732,7 @@ function LearningPage() {
   </>
 }
 
-function ModulePage({ pageName, page, onUpload, onExport, onNavigate }: { pageName: string; page?: { eyebrow: string; title: string; description: string; stats: string[]; rows: string[] }; onUpload: () => void; onExport: () => void; onNavigate: (page: string) => void }) {
+function ModulePage({ pageName, page, currentRole, onUpload, onExport, onNavigate }: { pageName: string; page?: { eyebrow: string; title: string; description: string; stats: string[]; rows: string[] }; currentRole: string; onUpload: () => void; onExport: () => void; onNavigate: (page: string) => void }) {
   const [activeTab, setActiveTab] = useState('Overview')
   const [filter, setFilter] = useState('All status')
   if (!page) return null
@@ -734,6 +744,7 @@ function ModulePage({ pageName, page, onUpload, onExport, onNavigate }: { pageNa
     </div>
     {isReadinessCaveat && <div className="module-disclaimer"><ShieldCheck size={16} /><span>Framework references and readiness indicators are for internal use. Verify current requirements with official sources; AGUS does not issue certifications.</span></div>}
     {pageName === 'Settings' && <section className="settings-about-link"><div><span className="panel-kicker">INFORMASI</span><h2>Tentang AGUS</h2><p>Lihat deskripsi aplikasi, tujuan, manfaat, dan informasi pengembang.</p></div><button className="button button-primary" onClick={() => onNavigate('Tentang aplikasi')}><Info size={15} /> Tentang aplikasi <ArrowRight size={14} /></button></section>}
+    {pageName === 'Settings' && <section className="role-management"><div className="role-management-heading"><div><span className="panel-kicker">AKSES WORKSPACE</span><h2>Empat peran pengguna</h2><p>Hak akses diambil dari custom claims Firebase dan ditegakkan oleh Firestore Rules.</p></div><span className="role-current">Peran Anda: {currentRole}</span></div><div className="role-card-grid">{Object.entries(agusRoles).map(([role, definition]) => <article className={`role-card ${role === 'super_admin' ? 'role-card-super' : ''}`} key={role}><span className="role-code">{role.replace(/_/g, ' ')}</span><h3>{definition.label}</h3><p>{definition.description}</p></article>)}</div></section>}
     <div className="module-stat-grid">{page.stats.map((stat, index) => <div className="module-stat" key={stat}><span className="module-stat-index">0{index + 1}</span><strong>{stat}</strong><span>{index === 0 ? 'CURRENT PROJECT' : index === 1 ? 'DEMO DATA' : 'LAST UPDATED TODAY'}</span></div>)}</div>
     <section className="module-workspace panel">
       <div className="module-toolbar"><div className="tab-list">{['Overview', 'Records', 'Activity'].map(tab => <button key={tab} className={activeTab === tab ? 'tab-active' : ''} onClick={() => setActiveTab(tab)}>{tab}</button>)}</div><div className="toolbar-controls"><label className="select-wrap filter-select"><SlidersHorizontal size={14} /><select value={filter} onChange={event => setFilter(event.target.value)} aria-label="Filter records"><option>All status</option><option>Needs attention</option><option>Verified</option></select><ChevronDown size={13} /></label><button className="icon-button subtle-icon" aria-label="Calendar view"><CalendarDays size={17} /></button></div></div>

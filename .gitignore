@@ -10,3 +10,7 @@ android/.gradle/
 android/local.properties
 ios/Pods/
 DerivedData/
+*-firebase-adminsdk-*.json
+service-account*.json
+*serviceAccount*.json
+*.pem
