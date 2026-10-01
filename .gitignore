@@ -1,0 +1,12 @@
+.env.local
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+*.tsbuildinfo
+**/build/
+android/.gradle/
+android/local.properties
+ios/Pods/
+DerivedData/

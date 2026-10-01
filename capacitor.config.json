@@ -1,0 +1,8 @@
+{
+  "appId": "id.co.adhikarya.agus",
+  "appName": "AGUS",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
