@@ -6,6 +6,7 @@ node_modules/
 dist/
 *.tsbuildinfo
 **/build/
+functions/lib/
 android/.gradle/
 android/local.properties
 ios/Pods/

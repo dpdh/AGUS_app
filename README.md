@@ -19,15 +19,15 @@ Login email/password dan Google menggunakan Firebase Authentication. Salin `.env
 
 ### Peran pengguna dan Super Admin
 
-AGUS menyediakan empat role: **Super Admin** (akses sistem penuh), **Admin** (pengelolaan workspace dan proyek), **Project Manager** (pengelolaan proyek dan catatan operasional), serta **Member** (membaca proyek dan mengelola bukti/inspeksi). Role tersimpan sebagai Firebase Auth custom claim `agusRole`, bukan sebagai nilai yang dapat diubah dari form/browser. Firestore Rules di `firestore.rules` memeriksa claim tersebut.
+AGUS menyediakan empat role: **Super Admin** (akses sistem penuh), **Admin** (pengelolaan workspace dan proyek), **Project Manager** (pengelolaan proyek dan catatan operasional), serta **Member** (membaca proyek dan mengelola bukti/inspeksi). Role tersimpan sebagai Firebase Auth custom claim `agusRole`, bukan sebagai nilai yang dapat diubah dari form/browser. Firestore Rules di `firestore.rules` memeriksa claim tersebut. **CMS Panel** hanya ditampilkan untuk Super Admin; Firebase Functions memeriksa claim yang sama pada setiap operasi daftar, ubah peran, nonaktifkan, dan hapus pengguna serta mencatat aktivitas administrasi.
 
 Untuk memberi akun `dp.danihamdani@gmail.com` role Super Admin:
 
 1. Aktifkan Firebase Authentication dan Firestore pada Firebase project yang sama.
 2. Buat service account khusus provisioning dengan izin minimum untuk mengelola Firebase Authentication, lalu simpan file JSON di luar repository. Jangan kirim atau commit file ini.
 3. Atur `GOOGLE_APPLICATION_CREDENTIALS` ke path file service account di terminal lokal. Untuk akun baru, jalankan `npm run create:super-admin`; kata sandi baru diminta secara tersembunyi di terminal. Script tidak membaca atau menyimpan kata sandi dari source code. Jika akun sudah ada, script hanya memasang claim Super Admin dan kata sandinya tidak diubah.
-4. Deploy rules dengan Firebase CLI: `firebase deploy --only firestore:rules`.
-5. Keluar lalu masuk kembali agar token memuat role terbaru.
+4. Deploy rules dan fungsi CMS dengan Firebase CLI: `firebase deploy --only firestore:rules,functions`.
+5. Keluar lalu masuk kembali agar token memuat role terbaru. Perubahan role yang dilakukan lewat CMS juga memerlukan pengguna terkait untuk masuk kembali.
 
 Jangan gunakan kembali kata sandi yang pernah dibagikan di chat. Gunakan kata sandi baru dan unik. Hak istimewa hanya dapat diberikan melalui Admin SDK/service account tepercaya; jangan menambahkannya ke konfigurasi frontend `VITE_*`.
 
@@ -35,14 +35,14 @@ Jangan gunakan kembali kata sandi yang pernah dibagikan di chat. Gunakan kata sa
 
 The Android app is wrapped with Capacitor. Install JDK 21 and Android SDK Platform 35 with Android Build Tools, then configure `JAVA_HOME` and `ANDROID_HOME` (or `ANDROID_SDK_ROOT`). Open `android/` in Android Studio once if you prefer to install and accept SDK components through its SDK Manager.
 
-Build a debug APK from the project root with:
+Build the minified, signed release APK from the project root with:
 
 ```bash
 npm install
 npm run android:apk
 ```
 
-The APK is written to `android/app/build/outputs/apk/debug/app-debug.apk`. The debug APK is intended for testing and sideloading, not Play Store release. For a signed release, configure a private signing key in Android Studio or Gradle; do not commit keystores or passwords.
+The APK is written to `android/app/build/outputs/apk/release/app-release.apk`. Release builds require a private keystore and signing properties at `%USERPROFILE%\.agus-signing\release.properties`; keep both outside the repository and never commit or share signing credentials.
 
 ## Prototype scope
 
