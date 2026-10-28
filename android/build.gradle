@@ -22,6 +22,23 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    // Paksa semua modul Android (termasuk capacitor-android dari node_modules)
+    // menggunakan Java 17 setelah semua project dievaluasi, sehingga build stabil
+    // dan tidak membutuhkan JDK 21 (hindari error invalid source release: 21).
+    gradle.projectsEvaluated {
+        subprojects { sub ->
+            if (sub.plugins.hasPlugin('com.android.application') ||
+                sub.plugins.hasPlugin('com.android.library')) {
+                sub.android {
+                    compileOptions {
+                        sourceCompatibility = JavaVersion.VERSION_17
+                        targetCompatibility = JavaVersion.VERSION_17
+                    }
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
