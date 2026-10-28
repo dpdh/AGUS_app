@@ -1202,3 +1202,111 @@ h1, h2, h3, p { margin-top: 0; }
   .text-size-controls button { min-width: 25px; padding: 0 3px; }
   .text-size-controls > span { min-width: 30px; }
 }
+
+.page-content > *:not(.dashboard-leaves) { position: relative; z-index: 1; }
+
+
+/* Dashboard flying green leaves */
+.dashboard-leaves {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.page-content { position: relative; }
+
+.flying-leaf {
+  position: absolute;
+  top: -40px;
+  left: -60px;
+  width: 26px;
+  height: 14px;
+  border-radius: 90% 0 90% 0;
+  background: linear-gradient(135deg, #9fd96a 0%, #2f8f4a 60%, #1f6b36 100%);
+  box-shadow: inset 1px 1px 0 rgba(220, 245, 180, 0.55), 0 2px 6px rgba(30, 90, 45, 0.25);
+  opacity: 0;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+.flying-leaf::after {
+  content: '';
+  position: absolute;
+  top: 46%;
+  left: 10%;
+  width: 78%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.35);
+  transform: rotate(-18deg);
+  transform-origin: left;
+}
+
+.flying-leaf-1 { animation: leaf-fly-1 11s linear infinite; }
+.flying-leaf-2 { animation: leaf-fly-2 14s linear infinite; animation-delay: 1.5s; width: 22px; height: 12px; }
+.flying-leaf-3 { animation: leaf-fly-3 12s linear infinite; animation-delay: 3s; width: 30px; height: 16px; background: linear-gradient(135deg, #b8e87a 0%, #3aa85a 60%, #237a40 100%); }
+.flying-leaf-4 { animation: leaf-fly-4 16s linear infinite; animation-delay: 0.5s; width: 18px; height: 10px; }
+.flying-leaf-5 { animation: leaf-fly-5 13s linear infinite; animation-delay: 4.5s; width: 24px; height: 13px; background: linear-gradient(135deg, #8fd05a 0%, #2c7f42 60%, #1a5c2e 100%); }
+.flying-leaf-6 { animation: leaf-fly-6 15s linear infinite; animation-delay: 2.2s; width: 20px; height: 11px; }
+.flying-leaf-7 { animation: leaf-fly-7 10s linear infinite; animation-delay: 6s; width: 28px; height: 15px; background: linear-gradient(135deg, #c6f08a 0%, #47b86a 60%, #2a8a45 100%); }
+.flying-leaf-8 { animation: leaf-fly-8 17s linear infinite; animation-delay: 7.5s; width: 16px; height: 9px; }
+
+@keyframes leaf-fly-1 {
+  0% { opacity: 0; transform: translate(0vw, 10vh) rotate(-30deg) scale(0.7); }
+  8% { opacity: 0.85; }
+  50% { transform: translate(45vw, 35vh) rotate(120deg) scale(1); }
+  92% { opacity: 0.85; }
+  100% { opacity: 0; transform: translate(95vw, 5vh) rotate(260deg) scale(0.8); }
+}
+@keyframes leaf-fly-2 {
+  0% { opacity: 0; transform: translate(5vw, 80vh) rotate(20deg) scale(0.6); }
+  10% { opacity: 0.75; }
+  50% { transform: translate(50vw, 55vh) rotate(-110deg) scale(1.05); }
+  90% { opacity: 0.75; }
+  100% { opacity: 0; transform: translate(98vw, 70vh) rotate(-240deg) scale(0.7); }
+}
+@keyframes leaf-fly-3 {
+  0% { opacity: 0; transform: translate(80vw, 90vh) rotate(60deg) scale(0.8); }
+  12% { opacity: 0.9; }
+  50% { transform: translate(40vw, 40vh) rotate(-150deg) scale(1.1); }
+  88% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(-5vw, 15vh) rotate(-300deg) scale(0.75); }
+}
+@keyframes leaf-fly-4 {
+  0% { opacity: 0; transform: translate(20vw, -5vh) rotate(-10deg) scale(0.7); }
+  10% { opacity: 0.7; }
+  50% { transform: translate(60vw, 45vh) rotate(140deg) scale(0.95); }
+  90% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(95vw, 85vh) rotate(300deg) scale(0.65); }
+}
+@keyframes leaf-fly-5 {
+  0% { opacity: 0; transform: translate(90vw, 20vh) rotate(40deg) scale(0.75); }
+  10% { opacity: 0.8; }
+  50% { transform: translate(45vw, 60vh) rotate(-90deg) scale(1); }
+  90% { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(5vw, 90vh) rotate(-220deg) scale(0.7); }
+}
+@keyframes leaf-fly-6 {
+  0% { opacity: 0; transform: translate(50vw, 100vh) rotate(-50deg) scale(0.6); }
+  12% { opacity: 0.75; }
+  50% { transform: translate(25vw, 50vh) rotate(100deg) scale(0.9); }
+  88% { opacity: 0.75; }
+  100% { opacity: 0; transform: translate(0vw, 10vh) rotate(220deg) scale(0.65); }
+}
+@keyframes leaf-fly-7 {
+  0% { opacity: 0; transform: translate(10vw, 50vh) rotate(15deg) scale(0.8); }
+  8% { opacity: 0.85; }
+  50% { transform: translate(70vw, 25vh) rotate(-130deg) scale(1.05); }
+  92% { opacity: 0.85; }
+  100% { opacity: 0; transform: translate(98vw, 60vh) rotate(-270deg) scale(0.75); }
+}
+@keyframes leaf-fly-8 {
+  0% { opacity: 0; transform: translate(70vw, 70vh) rotate(-20deg) scale(0.6); }
+  10% { opacity: 0.7; }
+  50% { transform: translate(30vw, 30vh) rotate(160deg) scale(0.9); }
+  90% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(-5vw, 5vh) rotate(320deg) scale(0.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flying-leaf { animation: none; opacity: 0; }
+}

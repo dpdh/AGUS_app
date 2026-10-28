@@ -965,6 +965,16 @@ function App() {
 
         <div className="page-content">
           {activePage === 'CMS Panel' && accountRole === 'Super Admin' ? <CmsPanel /> : activePage === 'Green Building' ? <GreenBuildingPage onNavigate={selectPage} /> : activePage === 'Bangunan Cerdas' ? <SmartBuildingPage onNavigate={selectPage} /> : activePage === 'Dashboard' ? <>
+            <div className="dashboard-leaves" aria-hidden="true">
+              <span className="flying-leaf flying-leaf-1" />
+              <span className="flying-leaf flying-leaf-2" />
+              <span className="flying-leaf flying-leaf-3" />
+              <span className="flying-leaf flying-leaf-4" />
+              <span className="flying-leaf flying-leaf-5" />
+              <span className="flying-leaf flying-leaf-6" />
+              <span className="flying-leaf flying-leaf-7" />
+              <span className="flying-leaf flying-leaf-8" />
+            </div>
             <div className="page-heading dashboard-heading">
               <div><div className="overline"><span className="live-pulse" /> PROJECT OVERVIEW <span className="heading-divider">/</span> DATA DEMO · OKTOBER 2026</div><h1>Selamat datang, {accountName.split(' ')[0]}<span className="heading-period">.</span></h1><p>Monitoring pilot project: {pilot.name}.</p></div>
               <div className="heading-actions">
